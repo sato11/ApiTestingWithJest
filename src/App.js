@@ -1,25 +1,28 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
+import { getUser } from './api/github';
+
+const renderLine = (user, key) => <li key={key}><b>{key}</b>: {user[key]}</li>
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { user: {} };
+  }
+
+  componentDidMount() {
+    getUser('sato11').then(data => {
+      this.setState({ user: data.entity });
+    });
+  }
+
   render() {
+    const { user } = this.state;
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+        <ul style={{ listStyle: 'none' }}>
+          {Object.keys(user).map(key => renderLine(user, key))}
+        </ul>
       </div>
     );
   }
